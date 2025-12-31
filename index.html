@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Happy New Year 2026</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,144 +16,225 @@
   --paper:#fff7fc;
   --paper2:#ffeff7;
   --pink:#ff2f8f;
+  --ink:#3a255e;
+  --muted:#6a5a85;
 }
+
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0;overflow:hidden;
+  margin:0;
+  overflow:hidden;
   font-family:Inter,system-ui;
   background:
     radial-gradient(1200px 700px at 70% 25%, rgba(170,80,255,.25), transparent 60%),
     radial-gradient(900px 650px at 20% 75%, rgba(0,210,255,.14), transparent 60%),
     linear-gradient(180deg,var(--bg1),var(--bg2));
+  -webkit-tap-highlight-color: transparent;
 }
-canvas{position:fixed;inset:0;z-index:0}
 
-.wrap{
+canvas#fx{position:fixed;inset:0;z-index:0}
+
+/* ====== Modal stage ====== */
+.stage{
   position:relative;
   z-index:2;
-  height:100%;
+  height:100vh;
+  height:100dvh;
   display:grid;
   place-items:center;
-  padding:20px;
-}
-.panel{
-  width:min(760px,95vw);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:16px;
+  padding:
+    max(16px, env(safe-area-inset-top))
+    max(16px, env(safe-area-inset-right))
+    max(18px, env(safe-area-inset-bottom))
+    max(16px, env(safe-area-inset-left));
 }
 
-/* LETTER */
-.letter{
-  width:100%;
-  background:linear-gradient(var(--paper),var(--paper2));
-  border-radius:28px;
-  padding:34px 32px 30px;
-  text-align:center;
-  box-shadow:0 30px 90px rgba(0,0,0,.45);
-  position:relative;
-
+/* Backdrop when letter is open */
+.backdrop{
+  position:fixed;
+  inset:0;
+  background: rgba(0,0,0,.42);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   opacity:0;
-  transform:translateY(26px) scale(.97);
   pointer-events:none;
-  transition:.6s cubic-bezier(.16,.95,.18,1);
+  transition: opacity .35s ease;
+  z-index:1;
 }
-.letter.show{
+.backdrop.show{
   opacity:1;
-  transform:none;
   pointer-events:auto;
 }
 
-/* CLOSE */
-.close-btn{
-  position:absolute;
-  top:14px;right:14px;
-  width:34px;height:34px;
-  border-radius:50%;
-  border:none;
-  cursor:pointer;
-  background:rgba(0,0,0,.06);
-  font-size:18px;
-  font-weight:700;
-  color:#6f5f88;
-}
-.close-btn:hover{background:rgba(0,0,0,.12)}
+/* ====== Letter card ====== */
+.letter{
+  width:min(720px, calc(100vw - 32px));
+  border-radius:28px;
+  background: linear-gradient(var(--paper), var(--paper2));
+  box-shadow: 0 28px 90px rgba(0,0,0,.55);
+  position:relative;
 
-/* TEXT */
-h1{
+  /* hidden state */
+  display:none;
+  overflow:hidden;
+}
+
+.letter.show{
+  display:block;
+  animation: popIn .55s cubic-bezier(.16,.95,.18,1) both;
+}
+
+@keyframes popIn{
+  from{opacity:0; transform:translateY(18px) scale(.98)}
+  to{opacity:1; transform:translateY(0) scale(1)}
+}
+
+/* Inner scroll area (so mobile doesn't overflow) */
+.letter-inner{
+  max-height: min(72dvh, 560px);
+  overflow:auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 18px 18px 18px;
+}
+
+/* Close button - stays visible */
+.close-btn{
+  position: sticky;
+  top: 10px;
+  margin-left:auto;
+  display:grid;
+  place-items:center;
+  width:36px;height:36px;
+  border-radius:999px;
+  border:1px solid rgba(0,0,0,.06);
+  background: rgba(255,255,255,.75);
+  color: rgba(70,50,100,.9);
+  cursor:pointer;
+  font-weight:900;
+  font-size:18px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.10);
+}
+.close-btn:hover{ transform: scale(1.03); }
+
+/* Header */
+.h1{
   font-family:Pacifico;
-  font-size:42px;
-  margin:0;
-  color:#3a255e;
+  font-size: clamp(30px, 5.2vw, 44px);
+  color: var(--ink);
+  margin: 6px 0 0;
+  text-align:center;
 }
 .year{
-  margin:8px 0 14px;
-  font-size:56px;
-  font-weight:800;
-  color:var(--pink);
-  letter-spacing:6px;
+  text-align:center;
+  margin: 6px 0 10px;
+  font-weight: 900;
+  font-size: clamp(42px, 7.2vw, 62px);
+  color: var(--pink);
+  letter-spacing: clamp(2px, 1vw, 7px);
+  text-shadow: 0 16px 40px rgba(255,47,143,.18);
 }
+
+.divider{
+  height:10px;
+  width:min(260px, 70%);
+  margin: 8px auto 12px;
+  background:
+    radial-gradient(circle at 10% 50%, rgba(255,47,143,.65) 0 3px, transparent 3px),
+    radial-gradient(circle at 35% 50%, rgba(0,210,255,.55) 0 3px, transparent 3px),
+    radial-gradient(circle at 60% 50%, rgba(255,211,107,.55) 0 3px, transparent 3px),
+    radial-gradient(circle at 85% 50%, rgba(181,155,255,.55) 0 3px, transparent 3px);
+}
+
 p{
   font-family:"Patrick Hand";
-  font-size:22px;
-  line-height:1.65;
-  color:#4a3a6a;
-  margin:10px 0;
+  font-size: clamp(18px, 4.4vw, 23px);
+  line-height: 1.62;
+  color: rgba(70,50,110,.86);
+  margin: 12px 0;
+  text-align:center;
 }
-.sign{
-  margin-top:22px;
-  padding-top:12px;
-  border-top:1px dashed rgba(0,0,0,.2);
-  display:flex;
-  justify-content:space-between;
-  font-size:13px;
-  color:#6a5a85;
-}
+
 .name{
   display:inline-block;
-  padding:0 10px;
+  padding: 1px 10px;
   border-radius:999px;
-  background:rgba(255,47,143,.12);
-  border:1px solid rgba(255,47,143,.18);
-  color:#ff2f8f;
-  font-weight:800;
+  background: rgba(255,47,143,.12);
+  border: 1px solid rgba(255,47,143,.18);
+  color: var(--pink);
+  font-weight: 900;
 }
 
-/* BUTTON */
+.sign{
+  margin-top:16px;
+  padding-top:12px;
+  border-top:1px dashed rgba(0,0,0,.18);
+  display:flex;
+  justify-content:space-between;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ====== Bottom button fixed everywhere ====== */
+.bottom-bar{
+  position:fixed;
+  left:0; right:0;
+  bottom:0;
+  z-index:3;
+  display:flex;
+  justify-content:center;
+  pointer-events:none;
+  padding:
+    12px
+    max(14px, env(safe-area-inset-right))
+    calc(14px + env(safe-area-inset-bottom))
+    max(14px, env(safe-area-inset-left));
+}
+
 .btn{
+  pointer-events:auto;
   border:0;
   cursor:pointer;
-  font-weight:800;
+  font-weight:900;
   letter-spacing:.3px;
-  padding:12px 22px;
+  padding: 14px 22px;
   border-radius:999px;
   color:#fff;
-  background:linear-gradient(160deg,#ff2f8f,#ff8ac7);
-  box-shadow:0 18px 55px rgba(0,0,0,.35);
+  background: linear-gradient(160deg,#ff2f8f,#ff8ac7);
+  box-shadow: 0 18px 55px rgba(0,0,0,.40);
+  transform: translateY(0);
+  transition: transform .15s ease;
 }
-.btn.hide{display:none}
+.btn:hover{ transform: translateY(-1px); }
+.btn.hide{ display:none; }
 
-@media(max-width:420px){
-  h1{font-size:36px}
-  .year{font-size:48px}
-  p{font-size:21px}
+/* Small phones tweaks */
+@media (max-width:420px){
+  .letter{ border-radius:24px; }
+  .letter-inner{ padding: 16px 14px 14px; }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce){
+  .letter.show{ animation:none; }
+  .backdrop{ transition:none; }
 }
 </style>
 </head>
 
 <body>
 <canvas id="fx"></canvas>
+<div class="backdrop" id="backdrop" aria-hidden="true"></div>
 
-<div class="wrap">
-  <div class="panel">
-
-    <div class="letter" id="letter" aria-hidden="true">
+<div class="stage">
+  <div class="letter" id="letter" aria-hidden="true">
+    <div class="letter-inner">
       <button class="close-btn" id="closeBtn" aria-label="Đóng">✕</button>
 
-      <h1>Happy New Year</h1>
+      <div class="h1">Happy New Year</div>
       <div class="year">2026</div>
+      <div class="divider"></div>
 
       <p>
         <span class="name" id="toLine">Bạn ơi</span>,<br>
@@ -170,7 +251,7 @@ p{
         không vội vàng cũng chẳng cần tự tạo áp lực cho bản thân.<br>
         Mong rằng hạnh phúc sẽ đến một cách nhẹ nhàng với <span id="p3b">bạn</span>,
         để mỗi quyết định đều vững tâm hơn,
-        và để <span id="p3c">bạn</span> có thể tận hưởng từng khoảnh khắc đời thường
+        và để <span id="p3c">bạn</span> tận hưởng từng khoảnh khắc đời thường
         một cách bình yên và trọn vẹn. ✨
       </p>
 
@@ -179,85 +260,91 @@ p{
         <span>- 2026 🎆</span>
       </div>
     </div>
-
-    <button class="btn" id="openBtn">Xem lời chúc ✨</button>
   </div>
 </div>
 
+<!-- Fixed bottom button on both phone & laptop -->
+<div class="bottom-bar">
+  <button class="btn" id="openBtn">Xem lời chúc ✨</button>
+</div>
+
 <script>
-/* ========= NAME + HONORIFIC ========= */
+/* ===== NAME + HONORIFIC ===== */
 const params = new URLSearchParams(location.search);
 let name = (params.get("name") || "").trim();
 let honor = (params.get("honorific") || "ban").toLowerCase();
 
 try { name = decodeURIComponent(name); } catch {}
 name = name.replace(/\s+/g," ").trim();
-if(name.length>26) name=name.slice(0,26)+"…";
+if (name.length > 26) name = name.slice(0,26) + "…";
 
-// honorific mapping:
-// ban => mình / bạn
-// chi => em / chị
-const you = honor === "chi" ? "chị" : "bạn";
-const me  = honor === "chi" ? "em" : "mình";
+// ban => mình/bạn ; chi => em/chị
+const you   = honor === "chi" ? "chị" : "bạn";
+const me    = honor === "chi" ? "em"  : "mình";
 const title = honor === "chi" ? "Chị" : "Bạn";
 
-// dòng gọi tên: "Chị Lan ơi" / "Bạn Lan ơi"
-document.getElementById("toLine").textContent =
-  name ? `${title} ${name} ơi` : `${title} ơi`;
-
-// gán xưng hô trong câu
+document.getElementById("toLine").textContent = name ? `${title} ${name} ơi` : `${title} ơi`;
 document.getElementById("p0").textContent = me;
-
 ["p1","p2","p2b","p3","p3b","p3c"].forEach(id=>{
   const el = document.getElementById(id);
   if(el) el.textContent = you;
 });
 
-/* ========= FIREWORKS ========= */
-const canvas=document.getElementById("fx");
-const ctx=canvas.getContext("2d",{alpha:true});
+/* ===== FIREWORKS (mobile optimized) ===== */
+const canvas = document.getElementById("fx");
+const ctx = canvas.getContext("2d", { alpha:true });
+
+const isMobile = matchMedia("(max-width: 600px)").matches || /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 let w,h,dpr;
 
 function resize(){
-  dpr=Math.min(2,devicePixelRatio||1);
-  w=innerWidth;h=innerHeight;
-  canvas.width=w*dpr;canvas.height=h*dpr;
-  canvas.style.width=w+"px";canvas.style.height=h+"px";
+  dpr = Math.max(1, Math.min(isMobile ? 1.5 : 2, window.devicePixelRatio || 1));
+  w = Math.floor(innerWidth);
+  h = Math.floor(innerHeight);
+  canvas.width = Math.floor(w * dpr);
+  canvas.height = Math.floor(h * dpr);
+  canvas.style.width = w + "px";
+  canvas.style.height = h + "px";
   ctx.setTransform(dpr,0,0,dpr,0,0);
 }
-addEventListener("resize",resize);resize();
+addEventListener("resize", resize, {passive:true});
+resize();
 
 const TAU=Math.PI*2;
 const rand=(a,b)=>a+Math.random()*(b-a);
-const hsl=(h,s,l,a=1)=>`hsla(${h},${s}%,${l}%,${a})`;
+const hsl=(hh,s,l,a=1)=>`hsla(${hh},${s}%,${l}%,${a})`;
 
 const rockets=[], sparks=[];
-const gravity=0.045, air=0.985, MAX=6000;
+const gravity=0.045, air=0.985;
+const MAX = isMobile ? 2600 : 6000;
+const AUTO_RATE = isMobile ? 0.018 : 0.03;
+
 const palettes=[{b:330,s:22},{b:45,s:14},{b:200,s:18},{b:285,s:16}];
-const pickHue=()=>{const p=palettes[Math.random()*palettes.length|0];return(p.b+rand(-p.s,p.s)+360)%360};
+const pickHue=()=>{const p=palettes[(Math.random()*palettes.length)|0];return (p.b + rand(-p.s,p.s) + 360) % 360};
 
 class Rocket{
-  constructor(x,y,tx,ty,h){
-    this.x=x;this.y=y;this.h=h;
+  constructor(x,y,tx,ty,hue){
+    this.x=x; this.y=y; this.h=hue;
     this.vx=(tx-x)*rand(.018,.024);
-    this.vy=(ty-y)*rand(.018,.024)-rand(2.2,3.6);
+    this.vy=(ty-y)*rand(.018,.024)-rand(2.1,3.4);
     this.tr=[];
   }
   step(){
-    this.x+=this.vx;this.y+=this.vy;
+    this.x+=this.vx; this.y+=this.vy;
     this.vy+=gravity*.25;
-    this.vx*=air;this.vy*=air;
+    this.vx*=air; this.vy*=air;
     this.tr.push({x:this.x,y:this.y});
-    if(this.tr.length>18) this.tr.shift();
+    if(this.tr.length>(isMobile?12:18)) this.tr.shift();
     if(Math.abs(this.vx)+Math.abs(this.vy)<.9){
-      explode(this.x,this.y,this.h);return false;
+      explode(this.x,this.y,this.h);
+      return false;
     }
     return true;
   }
   draw(){
     for(let i=0;i<this.tr.length-1;i++){
       const t=i/this.tr.length;
-      ctx.strokeStyle=hsl(this.h,100,65,.1+t*.4);
+      ctx.strokeStyle=hsl(this.h,100,65,.08+t*.35);
       ctx.lineWidth=2;
       ctx.beginPath();
       ctx.moveTo(this.tr[i].x,this.tr[i].y);
@@ -265,79 +352,117 @@ class Rocket{
       ctx.stroke();
     }
     ctx.fillStyle=hsl(this.h,100,70,.9);
-    ctx.beginPath();ctx.arc(this.x,this.y,2.6,0,TAU);ctx.fill();
+    ctx.beginPath(); ctx.arc(this.x,this.y,2.4,0,TAU); ctx.fill();
   }
 }
+
 class Spark{
   constructor(x,y,a,s,h){
-    this.x=x;this.y=y;
+    this.x=x; this.y=y;
     this.vx=Math.cos(a)*s;
     this.vy=Math.sin(a)*s;
     this.h=h;
-    this.life=rand(60,110);
+    this.life=rand(isMobile?45:60, isMobile?90:110);
     this.max=this.life;
+    this.sz=rand(1.0, isMobile?2.0:2.6);
+    this.tw=Math.random()<0.5;
   }
   step(){
-    this.x+=this.vx;this.y+=this.vy;
+    this.x+=this.vx; this.y+=this.vy;
     this.vy+=gravity;
-    this.vx*=air;this.vy*=air;
+    this.vx*=air; this.vy*=air;
     return --this.life>0;
   }
   draw(){
     const t=this.life/this.max;
-    ctx.fillStyle=hsl(this.h,100,65,t);
-    ctx.beginPath();
-    ctx.arc(this.x,this.y,2*(1-t),0,TAU);
-    ctx.fill();
+    const tw = this.tw ? rand(.75,1) : 1;
+    const a=t*tw;
+    const r=this.sz*(.6+(1-t)*.8);
+
+    ctx.fillStyle=hsl(this.h,100,65,a);
+    ctx.beginPath(); ctx.arc(this.x,this.y,r,0,TAU); ctx.fill();
+
+    ctx.fillStyle=hsl(this.h,100,70,a*0.10);
+    ctx.beginPath(); ctx.arc(this.x,this.y,r*3.8,0,TAU); ctx.fill();
   }
 }
-function explode(x,y,h){
-  for(let i=0;i<70&&sparks.length<MAX;i++)
-    sparks.push(new Spark(x,y,i/70*TAU,rand(4,6),h));
-  for(let i=0;i<160&&sparks.length<MAX;i++)
-    sparks.push(new Spark(x,y,rand(0,TAU),rand(2,8),h+rand(-8,8)));
+
+function explode(x,y,hue){
+  const ringN = isMobile ? 44 : 70;
+  const burstN = isMobile ? 95 : 160;
+
+  for(let i=0;i<ringN && sparks.length<MAX;i++){
+    sparks.push(new Spark(x,y,i/ringN*TAU,rand(4,6),hue));
+  }
+  for(let i=0;i<burstN && sparks.length<MAX;i++){
+    sparks.push(new Spark(x,y,rand(0,TAU),rand(2,8),hue+rand(-8,8)));
+  }
 }
+
 function launch(x,y){
   rockets.push(new Rocket(
-    rand(w*.15,w*.85),h+30,
-    x??rand(w*.2,w*.8),
-    y??rand(h*.3,h*.7),
+    rand(w*.15,w*.85), h+30,
+    x ?? rand(w*.2,w*.8),
+    y ?? rand(h*.3,h*.7),
     pickHue()
   ));
 }
+
 function frame(){
   ctx.fillStyle="rgba(0,0,0,.14)";
   ctx.fillRect(0,0,w,h);
-  ctx.save();ctx.globalCompositeOperation="lighter";
+
+  ctx.save();
+  ctx.globalCompositeOperation="lighter";
+
   for(let i=rockets.length-1;i>=0;i--)
     rockets[i].step()?rockets[i].draw():rockets.splice(i,1);
+
   for(let i=sparks.length-1;i>=0;i--)
     sparks[i].step()?sparks[i].draw():sparks.splice(i,1);
+
   ctx.restore();
-  if(Math.random()<.03) launch();
+
+  if(Math.random()<AUTO_RATE) launch();
   requestAnimationFrame(frame);
 }
 frame();
 
-/* ========= UI ========= */
-const openBtn=document.getElementById("openBtn");
-const closeBtn=document.getElementById("closeBtn");
-const letter=document.getElementById("letter");
+/* ===== UI ===== */
+const openBtn = document.getElementById("openBtn");
+const closeBtn = document.getElementById("closeBtn");
+const letter = document.getElementById("letter");
+const backdrop = document.getElementById("backdrop");
 
-openBtn.onclick=()=>{
+function openLetter(){
   letter.classList.add("show");
+  letter.setAttribute("aria-hidden","false");
+  backdrop.classList.add("show");
+  backdrop.setAttribute("aria-hidden","false");
   openBtn.classList.add("hide");
-  const r=letter.getBoundingClientRect();
-  for(let i=0;i<10;i++)
+
+  // fireworks volley at center of letter
+  const r = letter.getBoundingClientRect();
+  const volley = isMobile ? 7 : 10;
+  for(let i=0;i<volley;i++){
     setTimeout(()=>launch(
-      r.left+r.width/2+rand(-160,160),
-      r.top+r.height/2+rand(-100,100)
-    ),i*120);
-};
-closeBtn.onclick=()=>{
+      r.left+r.width/2 + rand(-140,140),
+      r.top+r.height/2 + rand(-90,90)
+    ), i*(isMobile?140:120));
+  }
+}
+
+function closeLetter(){
   letter.classList.remove("show");
+  letter.setAttribute("aria-hidden","true");
+  backdrop.classList.remove("show");
+  backdrop.setAttribute("aria-hidden","true");
   openBtn.classList.remove("hide");
-};
+}
+
+openBtn.addEventListener("click", openLetter, {passive:true});
+closeBtn.addEventListener("click", closeLetter, {passive:true});
+backdrop.addEventListener("click", closeLetter, {passive:true});
 </script>
 </body>
 </html>
