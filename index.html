@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Happy New Year 2026</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Patrick+Hand&family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg1:#030014;
+  --bg2:#0a0033;
+  --paper:#fff7fc;
+  --paper2:#ffeff7;
+  --pink:#ff2f8f;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;overflow:hidden;
+  font-family:Inter,system-ui;
+  background:
+    radial-gradient(1200px 700px at 70% 25%, rgba(170,80,255,.25), transparent 60%),
+    radial-gradient(900px 650px at 20% 75%, rgba(0,210,255,.14), transparent 60%),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
+}
+canvas{position:fixed;inset:0;z-index:0}
+
+.wrap{
+  position:relative;
+  z-index:2;
+  height:100%;
+  display:grid;
+  place-items:center;
+  padding:20px;
+}
+.panel{
+  width:min(760px,95vw);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:16px;
+}
+
+/* LETTER */
+.letter{
+  width:100%;
+  background:linear-gradient(var(--paper),var(--paper2));
+  border-radius:28px;
+  padding:34px 32px 30px;
+  text-align:center;
+  box-shadow:0 30px 90px rgba(0,0,0,.45);
+  position:relative;
+
+  opacity:0;
+  transform:translateY(26px) scale(.97);
+  pointer-events:none;
+  transition:.6s cubic-bezier(.16,.95,.18,1);
+}
+.letter.show{
+  opacity:1;
+  transform:none;
+  pointer-events:auto;
+}
+
+/* CLOSE */
+.close-btn{
+  position:absolute;
+  top:14px;right:14px;
+  width:34px;height:34px;
+  border-radius:50%;
+  border:none;
+  cursor:pointer;
+  background:rgba(0,0,0,.06);
+  font-size:18px;
+  font-weight:700;
+  color:#6f5f88;
+}
+.close-btn:hover{background:rgba(0,0,0,.12)}
+
+/* TEXT */
+h1{
+  font-family:Pacifico;
+  font-size:42px;
+  margin:0;
+  color:#3a255e;
+}
+.year{
+  margin:8px 0 14px;
+  font-size:56px;
+  font-weight:800;
+  color:var(--pink);
+  letter-spacing:6px;
+}
+p{
+  font-family:"Patrick Hand";
+  font-size:22px;
+  line-height:1.65;
+  color:#4a3a6a;
+  margin:10px 0;
+}
+.sign{
+  margin-top:22px;
+  padding-top:12px;
+  border-top:1px dashed rgba(0,0,0,.2);
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  color:#6a5a85;
+}
+.name{
+  display:inline-block;
+  padding:0 10px;
+  border-radius:999px;
+  background:rgba(255,47,143,.12);
+  border:1px solid rgba(255,47,143,.18);
+  color:#ff2f8f;
+  font-weight:800;
+}
+
+/* BUTTON */
+.btn{
+  border:0;
+  cursor:pointer;
+  font-weight:800;
+  letter-spacing:.3px;
+  padding:12px 22px;
+  border-radius:999px;
+  color:#fff;
+  background:linear-gradient(160deg,#ff2f8f,#ff8ac7);
+  box-shadow:0 18px 55px rgba(0,0,0,.35);
+}
+.btn.hide{display:none}
+
+@media(max-width:420px){
+  h1{font-size:36px}
+  .year{font-size:48px}
+  p{font-size:21px}
+}
+</style>
+</head>
+
+<body>
+<canvas id="fx"></canvas>
+
+<div class="wrap">
+  <div class="panel">
+
+    <div class="letter" id="letter" aria-hidden="true">
+      <button class="close-btn" id="closeBtn" aria-label="Đóng">✕</button>
+
+      <h1>Happy New Year</h1>
+      <div class="year">2026</div>
+
+      <p>
+        <span class="name" id="toLine">Bạn ơi</span>,<br>
+        Năm mới gõ cửa, <span id="p0">mình</span> hy vọng <span id="p1">bạn</span> luôn bình yên trong tâm hồn
+        và mạnh khỏe để theo đuổi mọi hành trình <span id="p2b">bạn</span> lựa chọn.<br>
+        Mỗi sáng thức dậy, mong <span id="p2">bạn</span> khám phá được một niềm vui nhỏ
+        khiến nụ cười tự nhiên nở trên môi,
+        và có thêm một lý do để tin tưởng bước tiếp.
+      </p>
+
+      <p>
+        Chúc <span id="p3">bạn</span> năm 2026 thật rực rỡ theo một cách riêng,
+        không vội vàng cũng chẳng áp lực.<br>
+        Hãy để niềm hạnh phúc nhẹ nhàng lớn lên trong <span id="p3b">bạn</span>,
+        để mỗi quyết định thêm vững vàng,
+        và để <span id="p3c">bạn</span> tận hưởng từng khoảnh khắc của cuộc sống
+        một cách bình yên nhất. ✨
+      </p>
+
+      <div class="sign">
+        <span>Thân mến,</span>
+        <span>- 2026 🎆</span>
+      </div>
+    </div>
+
+    <button class="btn" id="openBtn">Xem lời chúc ✨</button>
+  </div>
+</div>
+
+<script>
+/* ========= NAME + HONORIFIC ========= */
+const params = new URLSearchParams(location.search);
+let name = (params.get("name") || "").trim();
+let honor = (params.get("honorific") || "ban").toLowerCase();
+
+try { name = decodeURIComponent(name); } catch {}
+name = name.replace(/\s+/g," ").trim();
+if(name.length>26) name=name.slice(0,26)+"…";
+
+// honorific mapping:
+// ban => mình / bạn
+// chi => em / chị
+const you = honor === "chi" ? "chị" : "bạn";
+const me  = honor === "chi" ? "em" : "mình";
+const title = honor === "chi" ? "Chị" : "Bạn";
+
+// dòng gọi tên: "Chị Lan ơi" / "Bạn Lan ơi"
+document.getElementById("toLine").textContent =
+  name ? `${title} ${name} ơi` : `${title} ơi`;
+
+// gán xưng hô trong câu
+document.getElementById("p0").textContent = me;
+
+["p1","p2","p2b","p3","p3b","p3c"].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) el.textContent = you;
+});
+
+/* ========= FIREWORKS ========= */
+const canvas=document.getElementById("fx");
+const ctx=canvas.getContext("2d",{alpha:true});
+let w,h,dpr;
+
+function resize(){
+  dpr=Math.min(2,devicePixelRatio||1);
+  w=innerWidth;h=innerHeight;
+  canvas.width=w*dpr;canvas.height=h*dpr;
+  canvas.style.width=w+"px";canvas.style.height=h+"px";
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+addEventListener("resize",resize);resize();
+
+const TAU=Math.PI*2;
+const rand=(a,b)=>a+Math.random()*(b-a);
+const hsl=(h,s,l,a=1)=>`hsla(${h},${s}%,${l}%,${a})`;
+
+const rockets=[], sparks=[];
+const gravity=0.045, air=0.985, MAX=6000;
+const palettes=[{b:330,s:22},{b:45,s:14},{b:200,s:18},{b:285,s:16}];
+const pickHue=()=>{const p=palettes[Math.random()*palettes.length|0];return(p.b+rand(-p.s,p.s)+360)%360};
+
+class Rocket{
+  constructor(x,y,tx,ty,h){
+    this.x=x;this.y=y;this.h=h;
+    this.vx=(tx-x)*rand(.018,.024);
+    this.vy=(ty-y)*rand(.018,.024)-rand(2.2,3.6);
+    this.tr=[];
+  }
+  step(){
+    this.x+=this.vx;this.y+=this.vy;
+    this.vy+=gravity*.25;
+    this.vx*=air;this.vy*=air;
+    this.tr.push({x:this.x,y:this.y});
+    if(this.tr.length>18) this.tr.shift();
+    if(Math.abs(this.vx)+Math.abs(this.vy)<.9){
+      explode(this.x,this.y,this.h);return false;
+    }
+    return true;
+  }
+  draw(){
+    for(let i=0;i<this.tr.length-1;i++){
+      const t=i/this.tr.length;
+      ctx.strokeStyle=hsl(this.h,100,65,.1+t*.4);
+      ctx.lineWidth=2;
+      ctx.beginPath();
+      ctx.moveTo(this.tr[i].x,this.tr[i].y);
+      ctx.lineTo(this.tr[i+1].x,this.tr[i+1].y);
+      ctx.stroke();
+    }
+    ctx.fillStyle=hsl(this.h,100,70,.9);
+    ctx.beginPath();ctx.arc(this.x,this.y,2.6,0,TAU);ctx.fill();
+  }
+}
+class Spark{
+  constructor(x,y,a,s,h){
+    this.x=x;this.y=y;
+    this.vx=Math.cos(a)*s;
+    this.vy=Math.sin(a)*s;
+    this.h=h;
+    this.life=rand(60,110);
+    this.max=this.life;
+  }
+  step(){
+    this.x+=this.vx;this.y+=this.vy;
+    this.vy+=gravity;
+    this.vx*=air;this.vy*=air;
+    return --this.life>0;
+  }
+  draw(){
+    const t=this.life/this.max;
+    ctx.fillStyle=hsl(this.h,100,65,t);
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,2*(1-t),0,TAU);
+    ctx.fill();
+  }
+}
+function explode(x,y,h){
+  for(let i=0;i<70&&sparks.length<MAX;i++)
+    sparks.push(new Spark(x,y,i/70*TAU,rand(4,6),h));
+  for(let i=0;i<160&&sparks.length<MAX;i++)
+    sparks.push(new Spark(x,y,rand(0,TAU),rand(2,8),h+rand(-8,8)));
+}
+function launch(x,y){
+  rockets.push(new Rocket(
+    rand(w*.15,w*.85),h+30,
+    x??rand(w*.2,w*.8),
+    y??rand(h*.3,h*.7),
+    pickHue()
+  ));
+}
+function frame(){
+  ctx.fillStyle="rgba(0,0,0,.14)";
+  ctx.fillRect(0,0,w,h);
+  ctx.save();ctx.globalCompositeOperation="lighter";
+  for(let i=rockets.length-1;i>=0;i--)
+    rockets[i].step()?rockets[i].draw():rockets.splice(i,1);
+  for(let i=sparks.length-1;i>=0;i--)
+    sparks[i].step()?sparks[i].draw():sparks.splice(i,1);
+  ctx.restore();
+  if(Math.random()<.03) launch();
+  requestAnimationFrame(frame);
+}
+frame();
+
+/* ========= UI ========= */
+const openBtn=document.getElementById("openBtn");
+const closeBtn=document.getElementById("closeBtn");
+const letter=document.getElementById("letter");
+
+openBtn.onclick=()=>{
+  letter.classList.add("show");
+  openBtn.classList.add("hide");
+  const r=letter.getBoundingClientRect();
+  for(let i=0;i<10;i++)
+    setTimeout(()=>launch(
+      r.left+r.width/2+rand(-160,160),
+      r.top+r.height/2+rand(-100,100)
+    ),i*120);
+};
+closeBtn.onclick=()=>{
+  letter.classList.remove("show");
+  openBtn.classList.remove("hide");
+};
+</script>
+</body>
+</html>
